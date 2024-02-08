@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3D432A812B74CACE00B50ACB /* CameraPicker.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3D432A802B74CACE00B50ACB /* CameraPicker.swift */; };
 		3DD9E5FE2B665066006808BF /* cameraApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9E5FD2B665066006808BF /* cameraApp.swift */; };
 		3DD9E6002B665066006808BF /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DD9E5FF2B665066006808BF /* ContentView.swift */; };
 		3DD9E6022B665068006808BF /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3DD9E6012B665068006808BF /* Assets.xcassets */; };
@@ -15,6 +16,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3D432A802B74CACE00B50ACB /* CameraPicker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CameraPicker.swift; sourceTree = "<group>"; };
 		3DD9E5FA2B665066006808BF /* camera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = camera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		3DD9E5FD2B665066006808BF /* cameraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = cameraApp.swift; sourceTree = "<group>"; };
 		3DD9E5FF2B665066006808BF /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
@@ -57,6 +59,7 @@
 				3DD9E5FD2B665066006808BF /* cameraApp.swift */,
 				3DD9E5FF2B665066006808BF /* ContentView.swift */,
 				3DD9E60C2B66508D006808BF /* CameraView.swift */,
+				3D432A802B74CACE00B50ACB /* CameraPicker.swift */,
 				3DD9E6012B665068006808BF /* Assets.xcassets */,
 				3DD9E6062B665068006808BF /* camera.entitlements */,
 				3DD9E6032B665068006808BF /* Preview Content */,
@@ -142,6 +145,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3D432A812B74CACE00B50ACB /* CameraPicker.swift in Sources */,
 				3DD9E60D2B66508D006808BF /* CameraView.swift in Sources */,
 				3DD9E6002B665066006808BF /* ContentView.swift in Sources */,
 				3DD9E5FE2B665066006808BF /* cameraApp.swift in Sources */,
