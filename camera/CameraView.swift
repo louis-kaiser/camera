@@ -16,7 +16,7 @@ struct CameraView: NSViewRepresentable {
         let view = NSView()
         let session = AVCaptureSession()
         let previewLayer = AVCaptureVideoPreviewLayer(session: session)
-        previewLayer.videoGravity = .resizeAspectFill
+        previewLayer.videoGravity = .resizeAspect
         view.layer = previewLayer
         
         if let camera = globalModel.selectedCamera {
