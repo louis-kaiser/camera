@@ -13,13 +13,16 @@ class GlobalModel: ObservableObject {
 }
 
 struct ContentView: View {
-    @StateObject var globalModel = GlobalModel()
+    
+    @EnvironmentObject private var globalModel: GlobalModel
     
     var body: some View {
         VStack {
-            CameraView(camera: $globalModel.selectedCamera)
+            CameraView()
+                .environmentObject(globalModel)
                 .frame(width: 400, height: 300)
-            CameraPicker(camera: $globalModel.selectedCamera)
+            CameraPicker()
+                .environmentObject(globalModel)
         }
     }
 }

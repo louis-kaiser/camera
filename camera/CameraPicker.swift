@@ -9,7 +9,8 @@ import SwiftUI
 import AVFoundation
 
 struct CameraPicker: NSViewRepresentable {
-    @Binding var camera: AVCaptureDevice?
+    
+    @EnvironmentObject private var globalModel: GlobalModel
     
     func makeNSView(context: Context) -> NSView {
         let view = NSPopUpButton()
@@ -23,7 +24,7 @@ struct CameraPicker: NSViewRepresentable {
     
     func updateNSView(_ nsView: NSView, context: Context) {
         let popupButton = nsView as! NSPopUpButton
-        if let camera = camera {
+        if let camera = globalModel.selectedCamera {
             popupButton.selectItem(withTitle: camera.localizedName)
         } else {
             popupButton.selectItem(at: 0)
@@ -44,10 +45,10 @@ struct CameraPicker: NSViewRepresentable {
         @objc func cameraChanged(_ sender: NSPopUpButton) {
             let index = sender.indexOfSelectedItem
             if index == 0 {
-                parent.camera = nil
+                parent.globalModel.selectedCamera = nil
             } else {
                 let cameras = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .external], mediaType: .video, position: .unspecified).devices
-                parent.camera = cameras[index - 1]
+                parent.globalModel.selectedCamera = cameras[index - 1]
             }
         }
     }

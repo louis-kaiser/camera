@@ -9,7 +9,8 @@ import SwiftUI
 import AVFoundation
 
 struct CameraView: NSViewRepresentable {
-    @Binding var camera: AVCaptureDevice?
+    
+    @EnvironmentObject private var globalModel: GlobalModel
     
     func makeNSView(context: Context) -> NSView {
         let view = NSView()
@@ -18,7 +19,7 @@ struct CameraView: NSViewRepresentable {
         previewLayer.videoGravity = .resizeAspectFill
         view.layer = previewLayer
         
-        if let camera = camera {
+        if let camera = globalModel.selectedCamera {
             let input = try? AVCaptureDeviceInput(device: camera)
             if session.canAddInput(input!) {
                 session.addInput(input!)
@@ -36,7 +37,7 @@ struct CameraView: NSViewRepresentable {
         if let input = session.inputs.first {
             session.removeInput(input)
         }
-        if let camera = camera {
+        if let camera = globalModel.selectedCamera {
             let input = try? AVCaptureDeviceInput(device: camera)
             if session.canAddInput(input!) {
                 session.addInput(input!)
