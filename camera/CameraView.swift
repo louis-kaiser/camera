@@ -9,75 +9,67 @@ import SwiftUI
 import AVFoundation
 
 struct CameraView: NSViewRepresentable {
-    
-    @Binding var selectedCamera: AVCaptureDevice?
-    var captureSession = AVCaptureSession()
-    var previewLayer = AVCaptureVideoPreviewLayer()
+    @Binding var camera: AVCaptureDevice?
     
     func makeNSView(context: Context) -> NSView {
         let view = NSView()
+        let session = AVCaptureSession()
+        let previewLayer = AVCaptureVideoPreviewLayer(session: session)
+        previewLayer.videoGravity = .resizeAspectFill
+        view.layer = previewLayer
+        
+        if let camera = camera {
+            let input = try? AVCaptureDeviceInput(device: camera)
+            if session.canAddInput(input!) {
+                session.addInput(input!)
+            }
+        }
+        
+        session.startRunning()
         return view
     }
     
     func updateNSView(_ nsView: NSView, context: Context) {
-        guard let selectedCamera = selectedCamera else {
-            print("No camera selected.")
-            return
+        let previewLayer = nsView.layer as! AVCaptureVideoPreviewLayer
+        let session = previewLayer.session!
+        session.beginConfiguration()
+        if let input = session.inputs.first {
+            session.removeInput(input)
         }
-        
-        nsView.layer?.sublayers?.forEach { $0.removeFromSuperlayer() }
-        
-        do {
-            let input = try AVCaptureDeviceInput(device: selectedCamera)
-            captureSession.inputs.forEach { captureSession.removeInput($0) }
-            captureSession.addInput(input)
-        } catch {
-            print("Error setting up capture session: \(error.localizedDescription)")
+        if let camera = camera {
+            let input = try? AVCaptureDeviceInput(device: camera)
+            if session.canAddInput(input!) {
+                session.addInput(input!)
+            }
         }
-        
-        let previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-        previewLayer.frame = nsView.bounds
-        nsView.layer?.addSublayer(previewLayer)
-        
-        captureSession.startRunning()
+        session.commitConfiguration()
     }
 }
 
-
 struct CameraPicker: NSViewRepresentable {
-    
-    @Binding var selectedCamera: AVCaptureDevice?
+    @Binding var camera: AVCaptureDevice?
     
     func makeNSView(context: Context) -> NSView {
-        let popUpButton = NSPopUpButton()
-        popUpButton.target = context.coordinator
-        popUpButton.action = #selector(Coordinator.cameraSelected(_:))
-        
-        let cameras = getListOfCameras()
-        
-        for camera in cameras {
-            let menuItem = NSMenuItem(title: camera.localizedName, action: nil, keyEquivalent: "")
-            menuItem.representedObject = camera
-            popUpButton.menu?.addItem(menuItem)
-        }
-        
-        // Handle the case where the selectedCamera may have changed before the view was created
-        if let selectedCamera = selectedCamera,
-           let index = cameras.firstIndex(of: selectedCamera) {
-            popUpButton.selectItem(at: index)
-        }
-        
-        return popUpButton
+        let view = NSPopUpButton()
+        view.target = context.coordinator
+        view.action = #selector(Coordinator.cameraChanged(_:))
+        // Use AVCaptureDeviceDiscoverySession instead of devices(for:)
+        let cameras = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .external], mediaType: .video, position: .unspecified).devices
+        view.addItems(withTitles: ["None"] + cameras.map { $0.localizedName })
+        return view
     }
     
     func updateNSView(_ nsView: NSView, context: Context) {
-        // Handle the case where the selectedCamera may have changed after the view was created
-        guard let popUpButton = nsView as? NSPopUpButton else { return }
-        
-        if let selectedCamera = selectedCamera,
-           let index = popUpButton.itemArray.firstIndex(where: { ($0.representedObject as? AVCaptureDevice) == selectedCamera }) {
-            popUpButton.selectItem(at: index)
+        let popupButton = nsView as! NSPopUpButton
+        if let camera = camera {
+            popupButton.selectItem(withTitle: camera.localizedName)
+        } else {
+            popupButton.selectItem(at: 0)
         }
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator(self)
     }
     
     class Coordinator: NSObject {
@@ -87,22 +79,14 @@ struct CameraPicker: NSViewRepresentable {
             self.parent = parent
         }
         
-        @objc func cameraSelected(_ sender: NSPopUpButton) {
-            if let camera = sender.selectedItem?.representedObject as? AVCaptureDevice {
-                parent.selectedCamera = camera
+        @objc func cameraChanged(_ sender: NSPopUpButton) {
+            let index = sender.indexOfSelectedItem
+            if index == 0 {
+                parent.camera = nil
+            } else {
+                let cameras = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .external], mediaType: .video, position: .unspecified).devices
+                parent.camera = cameras[index - 1]
             }
         }
-    }
-    
-    func makeCoordinator() -> Coordinator {
-        Coordinator(self)
-    }
-    
-    func getListOfCameras() -> [AVCaptureDevice] {
-        let session = AVCaptureDevice.DiscoverySession(
-            deviceTypes: [.builtInWideAngleCamera, .external],
-            mediaType: .video,
-            position: .unspecified)
-        return session.devices
     }
 }

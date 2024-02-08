@@ -6,31 +6,16 @@
 //
 
 import SwiftUI
-
-struct ContentView: View {
-    
-    @EnvironmentObject private var globalModel: GlobalModel
-    
-    var body: some View {
-        ZStack {
-            CameraView(selectedCamera: $globalModel.selectedCamera)
-                .environmentObject(globalModel)
-            CameraPicker(selectedCamera: $globalModel.selectedCamera)
-        }
-        .ignoresSafeArea(.all)
-    }
-}
-
-struct ContentView_Previews: PreviewProvider {
-    static var previews: some View {
-        ContentView().environmentObject(GlobalModel())
-    }
-}
-
-
-import SwiftUI
 import AVFoundation
 
-class GlobalModel: ObservableObject {
-    @Published var selectedCamera: AVCaptureDevice?
+struct ContentView: View {
+    @State var camera: AVCaptureDevice?
+    
+    var body: some View {
+        VStack {
+            CameraView(camera: $camera)
+                .frame(width: 400, height: 300)
+            CameraPicker(camera: $camera)
+        }
+    }
 }
