@@ -9,7 +9,7 @@ import SwiftUI
 import AVFoundation
 
 struct ContentView: View {
-    @State var camera: AVCaptureDevice?
+    @State var camera = AVCaptureDevice.default(for: .video)
     
     var body: some View {
         VStack {
