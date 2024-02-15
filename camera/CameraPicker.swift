@@ -13,13 +13,10 @@ struct CameraPicker: View {
     @State private var selectedCamera: AVCaptureDevice?
 
     var body: some View {
-        List(cameras, id: \.uniqueID) { camera in
-            Button(action: {
-                self.selectedCamera = camera
-            }) {
-                Text(camera.localizedName)
+        Picker("Select Camera", selection: $selectedCamera) {
+            ForEach(cameras, id: \.uniqueID) { camera in
+                Text(camera.localizedName).tag(camera as AVCaptureDevice?)
             }
-            .background(selectedCamera == camera ? Color.blue : Color.clear)
         }
         .onAppear(perform: loadCameras)
     }
@@ -35,3 +32,4 @@ struct CameraPicker_Previews: PreviewProvider {
         CameraPicker()
     }
 }
+
