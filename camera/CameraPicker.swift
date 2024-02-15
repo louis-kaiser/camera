@@ -24,6 +24,9 @@ struct CameraPicker: View {
     func loadCameras() {
         let discoverySession = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera, .external], mediaType: .video, position: .unspecified)
         cameras = discoverySession.devices
+        if let firstCamera = cameras.first {
+            selectedCamera = firstCamera
+        }
     }
 }
 
