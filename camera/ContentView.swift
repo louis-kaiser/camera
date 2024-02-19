@@ -9,7 +9,13 @@ import SwiftUI
 import AVFoundation
 
 struct ContentView: View {
+    @State var camera = AVCaptureDevice.default(for: .video)
+    
     var body: some View {
-        CameraPicker()
+        VStack {
+            CameraView(camera: $camera)
+                .frame(width: 400, height: 300)
+            CameraPicker(camera: $camera)
+        }
     }
 }
